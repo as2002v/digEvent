@@ -215,12 +215,86 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
+    <!-- 导入jquery -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <!-- 导入模板 -->
+    <script src="./js/template-web.js"></script>
+    <!-- 顶部模板 -->
+    <script id="top" type="text/html">
+    {{each data}}
+    {{if $index == 0}}
+      <li class="first">
+    {{else}}
+      <li>
+`   {{/if}}
+            <a href="./article.html?id={{$value.id}}"><img src="{{$value.cover}}" alt=""></a>
+            <p>{{$value.title}}</p>
+        </li>
+    {{/each}}
+</script>
 
+    <!-- 模板 分类导航模板 -->
+    <script type="text/html" id="cate">
+        {{each data}}
+            <li><a href="#">{{$value.name}}</a></li>
+        {{/each}}
+      </script>
+    <!-- 底部模板 -->
+    <script type="text/html" id="bottom">
+        {{each data}}
+        <div class="common_news_list">
+                <a href="#" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
+                <h4>
+                    <a href="#">{{$value.title}} </a>
+                </h4>
+                <p>
+                   {{@$value.content}}
+                </p>
+                <div class="new_info">
+                    <span>标签：{{$value.type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{$value.read}} )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{$value.comment}} )</span>
+                    <b>发布于 {{$value.date}}</b>
+                </div>
+        </div>
+        {{/each}}
+      </script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: 'http://localhost:8000/admin/search',
+                type: 'get',
+                data: {
+                    page: 1,
+                    perpage: 5
+                },
+                success: backData => {
+                    console.log(backData)
+                    //顶部渲染到页面上
+                    $('.focus_list').html(template('top', backData))
+                    //清空
+                    $('.common_news_list').remove('')
+                    //底部渲染
+                    $('.left_con').append(template('bottom', backData))
+
+                }
+            })
+
+            //获取分类
+            $.ajax({
+                url: 'http://localhost:8000/admin/category_search',
+                type:'get',
+                success: backData => {
+                    //渲染到页面上
+                    $('.left_menu').html(template('cate',backData))
+                }
+            })
+
+        })
+    </script>
 </body>
 
 </html>

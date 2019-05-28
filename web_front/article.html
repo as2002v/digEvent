@@ -204,7 +204,43 @@
         <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
         <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
+    <!-- 导入jquery -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <!-- 导入模板引擎 -->
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="info">
 
+      {{data.author}} 发布于 {{data.date}}   分类:
+      {{data.type}}   阅读: ({{data.read}})   评论: ({{data.comment}})
+    </script>
+    <script>
+        $(function () {
+            //获取id
+            var id = window.location.search.split('=')[1]
+            //调用接口
+            $.ajax({
+                url: 'http://localhost:8000/admin/search',
+                type: 'get',
+                data: {
+                    id: id
+                },
+                success: function (backData) {
+                    console.log(backData);
+                    //  挨个设置
+                    $('.article_title').text(backData.data.title)
+                    $('.article_info').html(template('info', backData))
+                    // 清空并添加
+                    $('.article_con').html('')
+                    // 创建图片并添加
+                    $('<img src="" alt="">')
+                        .attr('src', backData.data.cover)
+                        .appendTo('.article_con')
+                    // 内容
+                    $('.article_con').append(backData.data.content)
+                }
+            })
+        })
+    </script>
 </body>
 
 </html>
